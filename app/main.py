@@ -70,25 +70,25 @@ app.add_middleware(
 )
 
 text_qa_template = (
-    "Sie sind ein hilfreicher Assistent der Firma. Sie erhalten kontextbezogene Informationen, die Sie unten finden.\n"
+    "You are a helpful assistant to the company. You will receive contextual information, which you can find below.\n"
     "---------------------\n"
     "{context_str}\n"
     "---------------------\n"
-    "Mit diesen Informationen"
-    "beantworten Sie die Frage: {query_str}\n"
-    "Versuchen Sie, die Kontextinformationen so weit wie möglich zu nutzen, um die Frage zu beantworten. \n"
+    "With this information"
+    "answer the question: {query_str}\n"
+    "Try to use the context information as much as possible to answer the question. \n"
 )
 text_qa_template = Prompt(text_qa_template)
 
 refine_template_str = (
-    "Treten Sie als Kundendienstmitarbeiter auf und beantworten Sie die Frage kurz und bündig: {query_str}\n"
-    "Kombinieren Sie mit der vorhandenen Antwort: {existing_answer}\n"
+    "Act as a customer service representative and answer the question succinctly: {query_str}\n"
+    "Combine with existing answer: {existing_answer}\n"
     "------------\n"
-    "Und verfeinern Sie sie mit weiterem Kontext: {query_str}\n"
+    "And refine with further context: {query_str}\n"
     "------------\n"
     "{context_msg}\n"
     "------------\n"
-    "Seien Sie kurz, höflich und respektvoll, wenn Sie auf Kundenanfragen antworten"
+    "Be brief, polite, and respectful when responding to customer inquiries"
 )
 refine_template = Prompt(refine_template_str)
 
@@ -237,20 +237,20 @@ async def message(request: Request, api_key: str = Depends(api_key_validation)):
                 refine_template=refine_template,
                 response_mode="refine",
             )
-
+            system_prompt="You are a customer service representative for the company. Be brief, polite, and respectful when responding to customer inquiries. Try to answer briefly, clearly, and understandably"
             chat_engine = index.as_chat_engine(
                 chat_mode="context",
                 verbose=True,
                 memory=memory,
                 response_synthesizer=response_synthesizer,
-                system_prompt="Sie sind Kundenbetreuer des Unternehmens Accelary. Seien Sie kurz, höflich und respektvoll bei der Beantwortung von Kundenanfragen. Versuchen Sie, kurz, klar und verständlich zu antworten",
+                system_prompt=system_prompt
             )
 
             messages = [
                 ChatMessage(
                     role="system",
-                    content="Sie sind Kundenbetreuer des Unternehmens Accelary. Seien Sie kurz, höflich und respektvoll bei der Beantwortung von Kundenanfragen. Versuchen Sie, kurz, klar und verständlich zu antworten",
-                ),
+                    content=system_prompt
+            ),
             ]
             text = chat_engine.chat(query, chat_history=messages)
 
@@ -266,3 +266,4 @@ async def message(request: Request, api_key: str = Depends(api_key_validation)):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Something went wrong: {e}")
+

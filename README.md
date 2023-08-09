@@ -1,6 +1,6 @@
 # LLM Bot
 
-This is a bot for finding data in the local context of your documents. It works by prompt engineering with ChatGPT, this application can add your context to LLM without finetuning It has German prompts, and work better with German, change `text_qa_template`, `refine_template_str`, `system_prompt` as you need with your language. You can upload new knowledge or delete one. You should have an OpenAI token for it to work. Please add your token to the .env file. You may also want to host your embedding database somewhere(AWS), please specify your hosted db IP address in the .env file too, or leave it alone if you want local usage, which is not recommended for production by the way.
+This is a bot for finding data in the local context of your documents. It works by prompt engineering with ChatGPT, this application can add your context to LLM without finetuning It has English prompts, and work better with English, change `text_qa_template`, `refine_template_str`, `system_prompt` as you need with your language. You can upload new knowledge or delete one. You should have an OpenAI token for it to work. Please add your token to the .env file. You may also want to host your embedding database somewhere(AWS), please specify your hosted db IP address in the .env file too, or leave it alone if you want local usage, which is not recommended for production by the way.
 
 ## How to install
 
