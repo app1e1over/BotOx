@@ -3,7 +3,7 @@ version: "3.8"
 services:
   llm-app:
     container_name: llm-app
-    command: uvicorn app.main:app --log-config=/app/configs/logging.yaml --reload --host=0.0.0.0 --port=8000 
+    command: uvicorn app.main:app --log-config=/app/configs/logging.yaml --reload --host=0.0.0.0 --port=1342 
     build:
       context: .
     environment:
@@ -14,5 +14,5 @@ services:
       - ./:/app
       - /var/lib/chroma_db
     ports:
-      - 8000:8000
+      - 1342:1342
       - 5000:5000
