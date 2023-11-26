@@ -160,7 +160,7 @@ def handle_root(document_id: str, api_key: str = Depends(api_key_validation)):
 
 
 @app.post("/documents")
-async def slack_events(request: Request):
+async def postDock(request: Request):
     try:
         body = await request.body()
         decoded_body = body.decode()
