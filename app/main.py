@@ -122,7 +122,6 @@ def create_dict_from_arrays(ids, texts):
     result_dict = {ids[i]: texts[i] for i in range(len(ids))}
     return result_dict
 
-
 @app.get("/documents")
 def handle_root(api_key: str = Depends(api_key_validation)):
     result = create_dict_from_arrays(
@@ -139,7 +138,6 @@ def clear(api_key: str = Depends(api_key_validation)):
         raise HTTPException(status_code=500, detail=f"Something went wrong: {e}")
     return FASTAPIResponse(status_code=200)
 
-
 @app.delete("/documents/{document_id}")
 def handle_root(document_id: str, api_key: str = Depends(api_key_validation)):
     try:
@@ -148,16 +146,13 @@ def handle_root(document_id: str, api_key: str = Depends(api_key_validation)):
         raise HTTPException(status_code=500, detail=f"Something went wrong: {e}")
     return FASTAPIResponse(status_code=200)
 
-
 @app.get("/healthz")
 def handle_root():
     return "200"
 
-
 @app.get("/documents/{document_id}")
 def handle_root(document_id: str, api_key: str = Depends(api_key_validation)):
     return index.storage_context.docstore.get_document(document_id)
-
 
 @app.post("/documents")
 async def postDock(request: Request):
@@ -179,7 +174,6 @@ async def postDock(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Something went wrong: {e}")
 
-
 @app.put("/documents/{document_id}")
 async def handle_root(request: Request, document_id: str):
     try:
@@ -199,16 +193,13 @@ async def handle_root(request: Request, document_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Something went wrong: {e}")
 
-
-memory = ChatMemoryBuffer.from_defaults(token_limit=1500)
-
-
 @app.post("/message")
 async def message(request: Request, api_key: str = Depends(api_key_validation)):
     try:
         body = await request.body()
         decoded_body = body.decode()
         logging.log(level=logging.INFO, msg=decoded_body)
+
         if decoded_body:
             data = json.loads(decoded_body)
             query = data.get("query")
@@ -216,7 +207,6 @@ async def message(request: Request, api_key: str = Depends(api_key_validation)):
             query_engine = index.as_query_engine()
 
             response = query_engine.query(query)
-            logging.log(level=logging.INFO, msg=response)
             response_content = {"text": str(response)}
             return JSONResponse(content=response_content, status_code=200)
         else:
@@ -226,4 +216,7 @@ async def message(request: Request, api_key: str = Depends(api_key_validation)):
             status_code=e.status_code, detail=f"Something went wrong: {e.detail}"
         )
     except Exception as e:
+        logging.log(level=logging.WARNING, msg=e)
         raise HTTPException(status_code=500, detail=f"Something went wrong: {e}")
+    
+memory = ChatMemoryBuffer.from_defaults(token_limit=1500)
